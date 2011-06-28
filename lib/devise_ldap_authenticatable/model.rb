@@ -42,7 +42,8 @@ module Devise
           return nil unless attributes[@login_with].present? 
           
           # resource = find_for_ldap_authentication(conditions)
-          resource = where(@login_with => attributes[@login_with]).first
+          # resource = where(@login_with => attributes[@login_with]).first
+          resource = find(:first, :conditions => {@login_with => attributes[@login_with]})
                     
           if (resource.blank? and ::Devise.ldap_create_user)
             resource = self.new
