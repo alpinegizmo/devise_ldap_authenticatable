@@ -77,10 +77,10 @@ module Devise
       end
 
       def dn
+        ldap_entry = nil
         Timeout::timeout(CONN_TIMEOUT) do |sec|
           DeviseLdapAuthenticatable::Logger.send("LDAP search: #{@attribute}=#{@login}")
           filter = Net::LDAP::Filter.eq(@attribute.to_s, @login.to_s)
-          ldap_entry = nil
           @ldap.search(:filter => filter) {|entry| ldap_entry = entry}
         end
         if ldap_entry.nil?
