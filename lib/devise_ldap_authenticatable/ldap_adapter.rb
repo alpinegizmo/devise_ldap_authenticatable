@@ -164,6 +164,7 @@ module Devise
       private
       
       def bind(ldap)
+        result = false
         begin
           Timeout::timeout(CONN_TIMEOUT) do |sec|
             result = ldap.bind
