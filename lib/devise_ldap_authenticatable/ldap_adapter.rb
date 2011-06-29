@@ -81,7 +81,10 @@ module Devise
         Timeout::timeout(CONN_TIMEOUT) do |sec|
           DeviseLdapAuthenticatable::Logger.send("LDAP search: #{@attribute}=#{@login}")
           filter = Net::LDAP::Filter.eq(@attribute.to_s, @login.to_s)
-          @ldap.search(:filter => filter) {|entry| ldap_entry = entry}
+          @ldap.search(:filter => filter) do |entry| 
+            DeviseLdapAuthenticatable::Logger.send("LDAP search found: #{entry.inspect}")
+            ldap_entry = entry
+          end
         end
         if ldap_entry.nil?
           @ldap_auth_username_builder.call(@attribute, @login, @ldap)
@@ -94,6 +97,7 @@ module Devise
 
       def authenticate!
         @ldap.auth(dn, @password)
+        DeviseLdapAuthenticatable::Logger.send("LDAP trying to bind to #{dn}")
         bind(@ldap)
       end
 
@@ -172,6 +176,7 @@ module Devise
         rescue Errno::ETIMEDOUT, Timeout::Error, Net::LDAP::LdapError
           result = false
         end
+        DeviseLdapAuthenticatable::Logger.send("LDAP bind returning #{result.inspect} #{ldap.get_operation_result}")
         return result
       end
       
