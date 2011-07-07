@@ -50,6 +50,7 @@ module Devise
 
       def initialize(params = {})
         ldap_config = params[:config] || read_config
+        return unless ldap_config
         ldap_options = params
         ldap_options[:encryption] = :simple_tls if ldap_config["ssl"]
 
@@ -102,7 +103,7 @@ module Devise
       end
 
       def authenticated?
-        authenticate!
+        @ldap && authenticate!
       end
       
       def authorized?
