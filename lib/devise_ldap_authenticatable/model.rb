@@ -18,7 +18,7 @@ module Devise
       end
 
       def login_with
-         read_attribute(::Devise.authentication_keys.first)
+        read_attribute(::Devise.authentication_keys.first)
       end
 
       # Checks if a resource is valid upon authentication.
